@@ -1,6 +1,23 @@
-from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from users.models import User
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=300)
+    slug = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ('name',)
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=300)
+    slug = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ('name',)
 
 
 class Title(models.Model):
@@ -12,15 +29,10 @@ class Title(models.Model):
                                  on_delete=models.SET_NULL,
                                  blank=True, null=True,
                                  verbose_name='Категория')
-    
-class Category(models.Model):
-    name = models.CharField(max_length=300)
-    slug = models.SlugField(unique=True)
 
+    class Meta:
+        ordering = ('name',)
 
-class Genre(models.Model):
-    name = models.CharField(max_length=300)
-    slug = models.SlugField(unique=True)
 
 class Review(models.Model):
     text = models.TextField(verbose_name='Отзыв')

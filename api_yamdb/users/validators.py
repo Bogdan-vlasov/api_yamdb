@@ -7,4 +7,3 @@ def username_validator(value):
             'Запрещено использование имени пользователя "me".',
             params={'value': value},
         )
-
