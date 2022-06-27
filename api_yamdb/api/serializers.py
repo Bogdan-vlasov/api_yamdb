@@ -64,6 +64,7 @@ class SerializerSignUp(serializers.ModelSerializer):
             message='Username или email уже используются'
         )]
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug',)
@@ -95,13 +96,17 @@ class GenreField(serializers.SlugRelatedField):
         serializer = GenreSerializer(value)
         return serializer.data
 
+
 class TitleSerializer(serializers.ModelSerializer):
-    category = CategoryField(slug_field='slug', queryset=Category.objects.all(), required=False)
-    genre = GenreField(slug_field='slug', queryset=Genre.objects.all(), many=True)
+    category = CategoryField(
+        slug_field='slug', queryset=Category.objects.all(), required=False)
+    genre = GenreField(slug_field='slug',
+                       queryset=Genre.objects.all(), many=True)
     rating = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'name', 'year', 'rating', 'description', 'genre', 'category',)
+        fields = ('id', 'name', 'year', 'rating',
+                  'description', 'genre', 'category',)
         model = Title
 
     def get_rating(self, obj):
@@ -125,7 +130,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             title_id = (
                 self.context['request'].parser_context['kwargs']['title_id']
             )
-            review_by_author_title = Review.objects.filter(title=title_id, author_id=self.context['request'].user)
+            review_by_author_title = Review.objects.filter(
+                title=title_id, author_id=self.context['request'].user)
             if review_by_author_title.exists():
                 raise serializers.ValidationError(
                     'Нельзя оставить отзыв на одно произведение дважды'
@@ -143,4 +149,3 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'text', 'author', 'pub_date')
         extra_kwargs = {'review_id': {'required': True}}
-

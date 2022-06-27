@@ -16,12 +16,16 @@ from rest_framework.response import Response
 
 from users.models import User
 
-from .permissions import AdminOnly, IsAdminOrReadOnly, AdminModeratorAuthorPermission
+from .permissions import (AdminOnly,
+                          IsAdminOrReadOnly,
+                          AdminModeratorAuthorPermission)
 from .serializers import (SerializerNotAdmin, SerializerSignUp,
-                          SerializerUsers, SerializerToken, ReviewSerializer, CommentSerializer,
-                          CategorySerializer, GenreSerializer, TitleSerializer)
+                          SerializerUsers, SerializerToken, ReviewSerializer,
+                          CommentSerializer, CategorySerializer,
+                          GenreSerializer, TitleSerializer)
 from .filters import TitlesFilter
 from reviews.models import Review, Title, Comment, Category, Genre
+
 
 @api_view(['POST'])
 def signup_post(request):
@@ -150,6 +154,7 @@ class APISignup(APIView):
         self.send_email(data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [AdminModeratorAuthorPermission]
@@ -172,6 +177,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         super(ReviewViewSet, self).perform_update(serializer)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
@@ -197,7 +203,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         super(CommentViewSet, self).perform_update(serializer)
 
 
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -212,7 +217,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
 
 
 class GenreViewSet(viewsets.ModelViewSet):

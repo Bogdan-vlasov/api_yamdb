@@ -66,6 +66,7 @@ class User(AbstractUser):
                 fields=('username', 'email'), name='unique_user'
             )
         ]
+        ordering = ('username',)
 
     REQUIRED_FIELDS = ['email']
     USERNAME_FIELDS = 'email'
@@ -84,6 +85,3 @@ class User(AbstractUser):
     @property
     def is_user(self):
         return self.role == "user"
-
-
-
