@@ -1,7 +1,6 @@
 import uuid
 
 from django.core.mail import EmailMessage, send_mail
-from django.db import IntegrityError
 
 from rest_framework import permissions, status, viewsets, filters
 from rest_framework.decorators import action, api_view
