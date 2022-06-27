@@ -5,6 +5,40 @@ from reviews.models import Comment, Review, Category, Genre, Title
 from django.db.models import Avg
 
 
+from posts.models import Category, Genre, Title, Review
+from django.db.models import Avg
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('name', 'slug',)
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
+        model = Category
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('name', 'slug',)
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
+        model = Genre
+
+
+class CategoryField(serializers.SlugRelatedField):
+    def to_representation(self, value):
+        serializer = CategorySerializer(value)
+        return serializer.data
+
+
+class GenreField(serializers.SlugRelatedField):
+    def to_representation(self, value):
+        serializer = GenreSerializer(value)
+        return serializer.data
 
 class TitleSerializer(serializers.ModelSerializer):
     category = CategoryField(slug_field='slug', queryset=Category.objects.all(), required=False)
