@@ -12,7 +12,15 @@ class Title(models.Model):
                                  on_delete=models.SET_NULL,
                                  blank=True, null=True,
                                  verbose_name='Категория')
+    
+class Category(models.Model):
+    name = models.CharField(max_length=300)
+    slug = models.SlugField(unique=True)
 
+
+class Genre(models.Model):
+    name = models.CharField(max_length=300)
+    slug = models.SlugField(unique=True)
 
 class Review(models.Model):
     text = models.TextField(verbose_name='Отзыв')
