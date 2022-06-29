@@ -40,6 +40,6 @@ auth_urls = [
     path('token/', APIGetToken.as_view(), name='get_token'),
 ]
 urlpatterns = [
-    path(API_V1 +'auth/', include(auth_urls)),
+    path(API_V1 + 'auth/', include(auth_urls)),
     path(API_V1, include(router_v1.urls)),
 ]
