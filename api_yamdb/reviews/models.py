@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -10,6 +11,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Genre(models.Model):
@@ -18,12 +21,14 @@ class Genre(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
 
 class Title(models.Model):
     name = models.CharField(max_length=300)
     year = models.IntegerField(null=True, blank=True)
-    description = models.CharField(max_length=1000, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     genre = models.ManyToManyField(Genre, verbose_name='Жанр')
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL,
@@ -32,6 +37,8 @@ class Title(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
 
 
 class Review(models.Model):
@@ -43,7 +50,7 @@ class Review(models.Model):
         verbose_name='Автор отзыва',
         default=1
     )
-    score = models.IntegerField(
+    score = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1, 'Оценка должна быть не меньше 1.'),
             MaxValueValidator(10, 'Оценка должна быть не больше 10.')

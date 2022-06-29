@@ -48,10 +48,6 @@ class SerializerToken(serializers.ModelSerializer):
 
 
 class SerializerSignUp(serializers.ModelSerializer):
-    def validate(self, data):
-        if data['username'] == 'me':
-            raise serializers.ValidationError('Запрещенный логин me')
-        return data
 
     def create(self, validated_data):
         return User.objects.create(**validated_data)

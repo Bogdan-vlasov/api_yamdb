@@ -44,7 +44,7 @@ class User(AbstractUser):
     role = models.CharField(
         'Роль пользователя',
         choices=ROLES,
-        max_length=max(len(role[1]) for role in ROLES),
+        max_length=50,
         default=USER,
         blank=True
     )
@@ -67,6 +67,8 @@ class User(AbstractUser):
             )
         ]
         ordering = ('username',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     REQUIRED_FIELDS = ['email']
     USERNAME_FIELDS = 'email'
@@ -76,12 +78,12 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == "admin" or self.is_superuser
+        return self.role == ADMIN or self.is_superuser
 
     @property
     def is_moderator(self):
-        return self.role == "moderator"
+        return self.role == MODERATOR
 
     @property
     def is_user(self):
-        return self.role == "user"
+        return self.role == USER

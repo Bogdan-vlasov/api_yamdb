@@ -32,30 +32,29 @@ def signup_post(request):
     serializer.is_valid(raise_exception=True)
     username = serializer.validated_data['username']
     email = serializer.validated_data['email']
-    if not User.objects.filter(username=username).exsist():
-        user = User.objects.get_or_create(
-            username=username,
-            email=email,
-        )
-        confirmation_code = str(uuid.uuid4())
-        user.confirmation_code = confirmation_code
-        user.save()
-        email_body = (
-            f'Здравствуй, {user.username}.'
-            f'Код подтвержения для доступа к API: {user.confirmation_code}'
-        )
-        data = {
-            'email_body': email_body,
-            'to_email': user.email,
-            'email_subject': 'Код подтвержения для доступа к API!'
-        }
-        send_mail(data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    else:
+    if User.objects.filter(username=username).exists():
         return Response(
             'Такой логин или email уже существуют',
             status=status.HTTP_400_BAD_REQUEST
         )
+    user = User.objects.get_or_create(
+        username=username,
+        email=email,
+    )
+    confirmation_code = str(uuid.uuid4())
+    user.confirmation_code = confirmation_code
+    user.save()
+    email_body = (
+        f'Здравствуй, {user.username}.'
+        f'Код подтвержения для доступа к API: {user.confirmation_code}'
+    )
+    data = {
+        'email_body': email_body,
+        'to_email': user.email,
+        'email_subject': 'Код подтвержения для доступа к API!'
+    }
+    send_mail(data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -87,20 +86,13 @@ class UsersViewSet(viewsets.ModelViewSet):
     def get_current_user_info(self, request):
         serializer = SerializerUsers(request.user)
         if request.method == 'PATCH':
-            if request.user.is_admin:
-                serializer = SerializerUsers(
-                    request.user,
-                    data=request.data,
-                    partial=True)
-            else:
-                serializer = SerializerNotAdmin(
-                    request.user,
-                    data=request.data,
-                    partial=True)
+            serializer = SerializerNotAdmin(
+                request.user,
+                data=request.data,
+                partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class APIGetToken(APIView):
@@ -197,9 +189,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         comment = get_object_or_404(Comment, pk=comment_id)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def perform_update(self, serializer):
-        super(CommentViewSet, self).perform_update(serializer)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
